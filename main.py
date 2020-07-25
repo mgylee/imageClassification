@@ -4,6 +4,9 @@ import os
 import shutil
 
 
+def check_args(args):
+    assert args.unroll_data and not (args.test_path or args.train_path), "Provide --unroll-data only or --train-path and --test-path."
+
 def check_file(filepath):
     label_class = ('forest', 'buildings', 'glacier', 'street', 'mountain', 'sea')
     label = filepath.split('/')[-1]
@@ -19,10 +22,10 @@ def write_files(rootpath, writepath, filename, label, files):
         csv_writer.writeheader()
 
         for image in files:
-            csv_entry = dict()
             string_buffer = 9 - len(image)
-            csv_entry['image_id'] = string_buffer * '0' + image
-            csv_entry['label'] = label
+            image_name = string_buffer * '0' + image
+
+            csv_entry = {'image_id': image_name, 'label': label}
             csv_writer.writerow(csv_entry)
 
             cur_dir = os.path.join(rootpath, image)
@@ -63,7 +66,7 @@ def prep_train(path = './data/111880_269359_bundle_archive/seg_train/seg_train')
         write_files(root, write_path, 'train_labels', label, files)
 
 # Create train, test, pred folders
-def create_folder():
+def create_folder(path, split = False):
     data_path = './data'
     check_folder = ('train', 'test', 'pred')
     for i in check_folder:
@@ -74,6 +77,23 @@ def create_folder():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+
+    # Argument inputs
+    parser.add_argument('--write-path', default='', help = 'Processed data write destination. PATH')
+    parser.add_argument('--unroll-data', help = 'Unroll data into labels and images file. PATH')
+    parser.add_argument('--train-path', help = 'Unroll train data into labels and images file. PATH')
+    parser.add_argument('--test-path', help = 'Unroll test data into labels and images file. PATH')
+
+    # Validate and assign argument inputs
+    args = parser.parse_args()
+    check_args(args)
+
+    write_path = args.write_path
+    unroll_data = args.unroll_data
+    train_path = args.train_path
+    test_path = args.test_path
     
-    create_folder()
-    prep_test()
+
+    #create_folder()
+    #prep_test()
