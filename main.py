@@ -67,13 +67,18 @@ def prep_train(path = './data/111880_269359_bundle_archive/seg_train/seg_train')
 
 # Create train, test, pred folders
 def create_folder(path, split = False):
-    data_path = './data'
-    check_folder = ('train', 'test', 'pred')
-    for i in check_folder:
-        folder_path = os.path.join(data_path, i)
-        if not os.path.isdir(folder_path):
+    if split:
+        check_folder = ('train', 'test')
+        for i in check_folder:
+            folder_path = os.path.join(path, i)
+            if not os.path.isdir(folder_path):
+                os.mkdir(folder_path)
+                os.mkdir(folder_path + '/images')
+    else:
+        folder_path = os.path.join(path, 'data')
+        if not os.path.isdir(folder_path):       
             os.mkdir(folder_path)
-            os.mkdir(os.path.join(folder_path, 'images'))
+            os.mkdir(folder_path + '/images')
 
 
 if __name__ == '__main__':
@@ -95,5 +100,5 @@ if __name__ == '__main__':
     test_path = args.test_path
     
 
-    #create_folder()
+    create_folder()
     #prep_test()
