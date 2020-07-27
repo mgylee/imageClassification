@@ -4,9 +4,7 @@ import os
 import shutil
 
 
-def check_args(args):
-    assert args.unroll_data and not (args.test_path or args.train_path), "Provide --unroll-data only or --train-path and --test-path."
-
+# Check and return image label
 def check_file(filepath, label_class):
     label = filepath.split('/')[-1]
 
@@ -60,14 +58,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # Argument inputs
-    parser.add_argument('--write-path', default='', help = 'Processed data write destination. PATH')
+    parser.add_argument('--write-path', default='./', help = 'Processed data write destination. PATH')
     parser.add_argument('--unroll-data', help = 'Unroll data into labels and images file. PATH')
     parser.add_argument('--train-path', help = 'Unroll train data into labels and images file. PATH')
     parser.add_argument('--test-path', help = 'Unroll test data into labels and images file. PATH')
 
     # Validate and assign argument inputs
     args = parser.parse_args()
-    # check_args(args)
 
     write_path = args.write_path
     unroll_data = args.unroll_data
@@ -76,9 +73,9 @@ if __name__ == '__main__':
 
     # Helper vars
     split_bool = not bool(unroll_data)
-
     create_folder(write_path, split_bool)
 
+    # Unroll data
     if test_path:
         prep_data(test_path, write_path,'test')
 
