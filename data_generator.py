@@ -1,39 +1,36 @@
+from tensorflow import keras
 import numpy
-import keras
+import os
 
 
-class DataGenerator(keras.utils.Sequence):
-    def __init__(self, list_id, labels, batch_size = 32, dim = (28, 28, 3), n_channels = 1, n_classes = 10, shuffle = True):
-        self.dim = dim
+class ImageGenerator(keras.utils.Sequence):
+    def __init__(self, image_id, image_label, batch_size = 32, dim = (28, 28, 3), n_classes = 10, path = './data'):
+        self.image_label = image_label
+        self.image_id = image_id
         self.batch_size = batch_size
-        self.labels = labels
-        self.list_id = list_id
-        self.n_channels = n_channels
+        self.dim = dim
         self.n_classes = n_classes
-        self.shuffle = shuffle
-        self.on_epoch_end()
+        self.path = path
 
     def __len__(self):
-        return int(numpy.floor(len(self.list_id) / self.batch_size))
+        return int(numpy.floor(len(self.image_id) / self.batch_size))
 
     def __getitem__(self, index):
-        indexes = self.indexes[index * self.batch_size:(index + 1) * self.batch_size]
-        list_id_temp = [self.list_id[k] for k in indexes]
-        X, y = self.__data_generation(list_id_temp)
+
+        batch_image = self.image_id[index * self.batch_size:(index + 1) * self.batch_size]
+        batch_label = self.image_label[index * self.batch_size:(index + 1) * self.batch_size]
+
+        X, y = self.__data_generation(batch_image, batch_label)
+        print(X.shape, y.shape)
 
         return X, y
 
-    def on_epoch_end(self):
-        self.indexes = numpy.arange(len(self.list_id))
-        if self.shuffle == True:
-            numpy.random.shuffle(self.indexes)
+    def __data_generation(self, batch_image, batch_label):
+        X = numpy.empty((self.batch_size, *self.dim))
+        for i, name in enumerate(batch_image):
+            image_path = os.path.join(self.path, 'images', name)
+            image_arr = keras.preprocessing.image.load_img(image_path, color_mode = 'rgb', target_size = self.dim)
+            image_arr = keras.preprocessing.image.img_to_array(image_arr)
+            X[i,] = image_arr
 
-    def __data_generation(self, list_id_temp):
-        X = numpy.empty((self.batch_size, *self.dim, self.n_channels))
-        y = numpy.empty((self.batch_size), dtype = int)
-
-        for i, id in enumerate(list_id_temp):
-            X[i,] = numpy.load('data/' + id + '.npy')
-            y[i] = self.labels[id]
-
-        return X, keras.utils.to_categorical(y, num_classes = self.n_classes)
+        return X, keras.utils.to_categorical(batch_label, num_classes = self.n_classes)

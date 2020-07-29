@@ -1,7 +1,9 @@
 from sklearn import preprocessing
 from sklearn import model_selection
-from keras import preprocessing
+from tensorflow import keras
 from tqdm import tqdm
+import nn_model
+import data_generator
 import argparse
 import csv
 import pandas
@@ -9,39 +11,34 @@ import numpy
 import os
 
 
-def norm_image(image):
-    image = preprocessing.image.img_to_array(image) / 255
-    return image
-
-def import_data(path = './prep_data'):
+def import_data(path = './data'):
     dataset = pandas.read_csv(os.path.join(path, 'data_labels.csv'), names = ['image_id', 'label'])
     dataset = dataset.to_numpy()
     numpy.random.shuffle(dataset)
+    split_data = numpy.hsplit(dataset, 2)
 
-    X = list()
-    test_count = 0
+    image_id = numpy.ravel(split_data[0])
+    image_label, image_classes = encode_labels(numpy.ravel(split_data[1]))
 
-    for i in dataset:
-        test_count += 1
-        image_path = os.path.join(path, 'images', i[0].strip('0'))
-        try:
-            image = preprocessing.image.load_img(image_path, target_size=(28,28,3))
-            X.append(norm_image(image))
-        except:
-            image_path = os.path.join(path, 'images', '0' + i[0].strip('0'))
-            X.append(norm_image(image))
+    return image_id, image_label, image_classes
 
-        if test_count > 50:
-            break
+def encode_labels(label):
+    label_encoder = preprocessing.LabelEncoder()
+    label_encoder.fit(label)
     
-    
-
-def encode_data():
-    pass
-
-
-
+    return label_encoder.transform(label), label_encoder.classes_
 
 
 if __name__ == '__main__':
-    import_data()
+
+    gparams = {
+        'dim': (28, 28, 3),
+        'batch_size': 64,
+        'n_classes': 6,
+    }
+
+    image_id, image_label, image_classes = import_data()
+    image_stream = data_generator.ImageGenerator(image_id, image_label, **gparams)
+
+    image_model = nn_model.ImageClassModel(image_classes)
+    image_model.fit_generator(image_stream)
