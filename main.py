@@ -22,7 +22,7 @@ def write_files(rootpath, writepath, label, files):
 
             cur_dir = os.path.join(rootpath, image)
             new_dir = os.path.join(writepath, 'images', image)
-            # shutil.move(cur_dir, new_dir)
+            shutil.move(cur_dir, new_dir)
 
 # Identify image classes and create label file
 def prep_data(data_path, write_path, type_data):

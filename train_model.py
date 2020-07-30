@@ -30,15 +30,14 @@ def encode_labels(label):
 
 
 if __name__ == '__main__':
-
+    image_id, image_label, image_classes = import_data()
     gparams = {
         'dim': (28, 28, 3),
         'batch_size': 64,
-        'n_classes': 6,
+        'n_classes': len(image_classes),
     }
 
-    image_id, image_label, image_classes = import_data()
     image_stream = data_generator.ImageGenerator(image_id, image_label, **gparams)
-
     image_model = nn_model.ImageClassModel(image_classes)
-    image_model.fit_generator(image_stream)
+    image_model.fit(image_stream, epochs = 3)
+    image_model.save_model(path = './model/test_model.h5')

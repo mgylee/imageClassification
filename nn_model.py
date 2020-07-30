@@ -2,6 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 
 
+# NN Class
 class ImageClassModel:
     def __init__(self, labels):
         # Create inference array
@@ -25,12 +26,15 @@ class ImageClassModel:
 
         self.model.compile(loss = 'categorical_crossentropy', optimizer = 'Adam', metrics = ['accuracy'])
 
-    def fit(self, X_train, y_train, epochs, validation_data):
-        self.model.fit(X_train, y_train, epochs, validation_data = validation_data)
+    def fit(self, X_train, y_train = None, epochs = 1, validation_data = None):
+        if y_train:
+            self.model.fit(x = X_train, y = y_train, epochs = epochs, validation_data = validation_data)
+        else:
+            self.model.fit(x = X_train, epochs = epochs)
 
-    def fit_generator(self, generator, validation_data = None):
-        self.model.fit_generator(generator = generator, validation_data = validation_data)
-        print("Done training")
+    def evaluate(self):
+        # TODO: Create evaluation method
+        pass
 
     def predict_classes(self, image_array):
         self.class_index = self.model.predict_classes(image_array)

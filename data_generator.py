@@ -3,6 +3,7 @@ import numpy
 import os
 
 
+# Data generator to stream data for model training
 class ImageGenerator(keras.utils.Sequence):
     def __init__(self, image_id, image_label, batch_size = 32, dim = (28, 28, 3), n_classes = 10, path = './data'):
         self.image_label = image_label
@@ -21,10 +22,9 @@ class ImageGenerator(keras.utils.Sequence):
         batch_label = self.image_label[index * self.batch_size:(index + 1) * self.batch_size]
 
         X, y = self.__data_generation(batch_image, batch_label)
-        print(X.shape, y.shape)
-
         return X, y
 
+    # Generate next mini-batch of data
     def __data_generation(self, batch_image, batch_label):
         X = numpy.empty((self.batch_size, *self.dim))
         for i, name in enumerate(batch_image):
