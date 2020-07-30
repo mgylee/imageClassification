@@ -17,10 +17,7 @@ def write_files(rootpath, writepath, label, files):
         csv_writer = csv.DictWriter(csvfile, fieldnames = ['image_id', 'label'])
 
         for image in files:
-            string_buffer = 9 - len(image)
-            image_name = string_buffer * '0' + image
-
-            csv_entry = {'image_id': image_name, 'label': label}
+            csv_entry = {'image_id': image, 'label': label}
             csv_writer.writerow(csv_entry)
 
             cur_dir = os.path.join(rootpath, image)
@@ -31,9 +28,10 @@ def write_files(rootpath, writepath, label, files):
 def prep_data(data_path, write_path, type_data):
 
     for root, _, files in os.walk(data_path):
-        print(root)
         label = get_label(root)
         write_files(root, write_path, label, files)
+
+    print("Finished copying files.")
 
 # Create train, test folders
 def create_folder(path):
