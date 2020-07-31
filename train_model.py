@@ -37,7 +37,11 @@ if __name__ == '__main__':
         'n_classes': len(image_classes),
     }
 
-    image_stream = data_generator.ImageGenerator(image_id, image_label, **gparams)
+    X_train, X_test, y_train, y_test = model_selection.train_test_split(image_id, image_label, test_size = 0.2)
+
+    image_train = data_generator.ImageGenerator(X_train, y_train, **gparams)
+    image_val = data_generator.ImageGenerator(X_test, y_test, **gparams)
+
     image_model = nn_model.ImageClassModel(image_classes)
-    image_model.fit(image_stream, epochs = 3)
-    image_model.save_model(path = './model/test_model.h5')
+    image_model.fit(X_train = image_train, validation_data = image_val, epochs = 5)
+    image_model.save_model(path = './model')

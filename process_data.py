@@ -43,7 +43,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # Argument inputs
-    parser.add_argument('--write', default='', help = 'Processed data write destination. PATH')
+    parser.add_argument('--write', default = './data', help = 'Processed data write destination. PATH')
     parser.add_argument('--unroll', required = True, help = 'Unroll data into labels and images file. PATH')
 
     # Validate and assign argument inputs

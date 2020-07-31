@@ -1,12 +1,13 @@
-import tensorflow as tf
 from tensorflow import keras
+import numpy
+import os
 
 
 # NN Class
 class ImageClassModel:
     def __init__(self, labels):
         # Create inference array
-        self.inference_array = labels
+        self.inference_array = numpy.array(labels)
 
         # Create model
         self.model = keras.models.Sequential()
@@ -30,7 +31,7 @@ class ImageClassModel:
         if y_train:
             self.model.fit(x = X_train, y = y_train, epochs = epochs, validation_data = validation_data)
         else:
-            self.model.fit(x = X_train, epochs = epochs)
+            self.model.fit(x = X_train, validation_data = validation_data, epochs = epochs)
 
     def evaluate(self):
         # TODO: Create evaluation method
@@ -41,4 +42,7 @@ class ImageClassModel:
         return self.inference_array[self.class_index[0]]
 
     def save_model(self, path):
-        self.model.save(path)
+        model_path = os.path.join(path, 'model.h5')
+        label_path = os.path.join(path, 'label.txt')
+        self.model.save(model_path)
+        numpy.savetxt(label_path, self.inference_array, fmt = '%s')
