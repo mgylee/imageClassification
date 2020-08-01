@@ -1,9 +1,8 @@
 from sklearn import preprocessing
 from sklearn import model_selection
 from tensorflow import keras
-from tqdm import tqdm
-import nn_model
-import data_generator
+from package import nn_model
+from package import data_generator
 import argparse
 import csv
 import pandas

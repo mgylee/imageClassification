@@ -33,10 +33,6 @@ class ImageClassModel:
         else:
             self.model.fit(x = X_train, validation_data = validation_data, epochs = epochs)
 
-    def evaluate(self):
-        # TODO: Create evaluation method
-        pass
-
     def predict_classes(self, image_array):
         self.class_index = self.model.predict_classes(image_array)
         return self.inference_array[self.class_index[0]]
