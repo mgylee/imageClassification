@@ -38,7 +38,7 @@ def get_class_prediction(image_array):
 @app.route('/', methods=['GET', 'POST'])
 def upload():
     if request.method == 'GET':
-        return render_template('index.html')
+        return render_template('upload.html')
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -56,7 +56,7 @@ def upload():
 
             image = process_image(file_path)
             class_name = get_class_prediction(image).capitalize()
-            return render_template('result.html', label = class_name, img = image_name)
+            return render_template('upload.html', label = class_name, img = image_name)
     return
 
 if __name__ == '__main__':
