@@ -4,8 +4,11 @@
  <title>Image Classifer</title>
 </head>
 <body>
- <h2>Prediction</h2>
+ <h2>Upload an image!</h2>
+ <form method ='post' enctype=multipart/form-data>
+  <input type="file" name="file">
+  <input type="submit" value="Classify!">
  <img src="{{url_for('static', filename=img)}}" />
- <p>Image Class: {{ label }} </p>
+ <p> {{ label }} </p>
 </body>
 </html>
